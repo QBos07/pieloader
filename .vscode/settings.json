@@ -1,0 +1,5 @@
+{
+    "clangd.arguments": [
+        "--query-driver=/home/ubuntu/x-tools/sh4aeb-elf/bin/sh4aeb-elf-gcc,/home/ubuntu/x-tools/sh4aeb-elf/bin/sh4aeb-elf-g++"
+    ]
+}
