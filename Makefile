@@ -1,29 +1,25 @@
 # run `make all` to compile the .hhk and .bin file, use `make` to compile only the .bin file.
 # The .hhk file is the original format, the bin file is a newer format.
-APP_NAME:=STDLibTest
+APP_NAME:=pieloader
 
-ifndef SDK_DIR
-$(error You need to define the SDK_DIR environment variable, and point it to the sdk/ folder)
-endif
+AS:=sh4aeb-nano-elf-gcc
+AS_FLAGS:=-DAPPNAME_STRING=\"$(APP_NAME)\" -m4a-nofpu -gdwarf-5
 
-AS:=sh4aeb-elf-gcc
-AS_FLAGS:=-DAPPNAME_STRING=\"$(APP_NAME)\"
+COMMON_FLAGS:=-flto -ffunction-sections -fdata-sections -gdwarf-5 -Og -m4a-nofpu -DAPPNAME_STRING=\"$(APP_NAME)\"
+INCLUDES:=
+WARNINGS:=-Wall -Wextra -Wno-main
 
-COMMON_FLAGS:=-flto -ffunction-sections -fdata-sections -O2 -m4a-nofpu -DAPPNAME_STRING=\"$(APP_NAME)\"
-INCLUDES:=-I $(SDK_DIR)/include/
-WARNINGS:=-Wall -Wextra
+CC:=sh4aeb-nano-elf-gcc
+CC_FLAGS=$(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
 
-CC:=sh4aeb-elf-gcc
-CC_FLAGS:=$(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
+CXX:=sh4aeb-nano-elf-g++
+CXX_FLAGS=-std=c++20 -fno-exceptions -fno-rtti -Wno-write-strings $(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
 
-CXX:=sh4aeb-elf-g++
-CXX_FLAGS:=-fno-exceptions -fno-rtti -Wno-write-strings $(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
-
-LD:=sh4aeb-elf-g++
+LD:=sh4aeb-nano-elf-g++
 LD_FLAGS:=-nostartfiles -m4a-nofpu -Wl,--gc-sections -Wno-undef
 
-READELF:=sh4aeb-elf-readelf
-OBJCOPY:=sh4aeb-elf-objcopy
+READELF:=sh4aeb-nano-elf-readelf
+OBJCOPY:=sh4aeb-nano-elf-objcopy
 
 SOURCEDIR = src
 BUILDDIR = obj
@@ -35,6 +31,9 @@ CXX_SOURCES:=$(shell find $(SOURCEDIR) -name '*.cpp')
 OBJECTS := $(addprefix $(BUILDDIR)/,$(AS_SOURCES:.S=.o)) \
 	$(addprefix $(BUILDDIR)/,$(CC_SOURCES:.c=.o)) \
 	$(addprefix $(BUILDDIR)/,$(CXX_SOURCES:.cpp=.o))
+
+CC_NOLTOSRCS:=$(shell find $(SOURCEDIR)/nolto -name '*.c')
+NOLTOOBJS := $(addprefix $(BUILDDIR)/,$(CC_NOLTOSRCS:.c=.o))
 
 APP_ELF:=$(OUTDIR)/$(APP_NAME).elf
 APP_BIN:=$(OUTDIR)/$(APP_NAME).bin
@@ -49,17 +48,13 @@ clean:
 	rm -rf $(BUILDDIR) $(OUTDIR)
 
 $(APP_BIN): $(APP_ELF)
-	$(OBJCOPY) --output-target=binary $(APP_ELF) $@
+	$(OBJCOPY) --output-target=binary  --set-section-flags .bss=alloc,load,contents,data $(APP_ELF) $@
 
 $(APP_ELF): $(OBJECTS) $(SDK_DIR)/sdk.o linker.ld
 	mkdir -p $(dir $@)
 	$(LD) -T linker.ld -Wl,-Map $@.map -o $@ $(LD_FLAGS) $(OBJECTS)
 
-# We're not actually building sdk.o, just telling the user they need to do it
-# themselves. Just using the target to trigger an error when the file is
-# required but does not exist.
-$(SDK_DIR)/libsdk.a:
-	$(error You need to build the SDK before using it. Run make in the SDK directory, and check the README.md in the SDK directory for more information)
+$(NOLTOOBJS): COMMON_FLAGS+=-fno-lto
 
 $(BUILDDIR)/%.o: %.S
 	mkdir -p $(dir $@)

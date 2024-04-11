@@ -46,7 +46,7 @@ void *load_elf(uint8_t *file_memory, size_t length) {
   std::printf("Done\n");
 
   std::printf("Checking ELF type... ");
-  if (ehdr->e_type != ET_EXEC)
+  if (ehdr->e_type != ET_DYN)
     error("no");
   std::printf("yes\n");
 
@@ -101,7 +101,7 @@ void *load_elf(uint8_t *file_memory, size_t length) {
   std::printf("Checking ELF entry... ");
   if (ehdr->e_entry == 0)
     error("E: 0\n");
-  std::printf("%#08lx\n", reinterpret_cast<unsigned long>(file_memory) + ehdr->e_entry);
+  std::printf("%#08lx\n", static_cast<unsigned long>(ehdr->e_entry));
 
   std::printf("Checking program header offset... ");
   if (ehdr->e_phoff == 0)
@@ -110,8 +110,8 @@ void *load_elf(uint8_t *file_memory, size_t length) {
 
   std::printf("Checking program header size... ");
   if (ehdr->e_phentsize != sizeof(Elf32_Phdr))
-    error("E: %hu != %zu\n", ehdr->e_phentsize, sizeof(Elf32_Phdr));
-  std::printf("%zu\n", sizeof(Elf32_Phdr));
+    error("E: %hu != %lu\n", ehdr->e_phentsize, sizeof(Elf32_Phdr));
+  std::printf("%lu\n", sizeof(Elf32_Phdr));
 
   std::printf("Checking program header count... ");
   if (ehdr->e_phnum == 0)
@@ -125,8 +125,9 @@ void *load_elf(uint8_t *file_memory, size_t length) {
   dealloc_list->push_back(file_loads);
 
   for (auto phdr = reinterpret_cast<Elf32_Phdr *>(file_memory + ehdr->e_phoff);
-    phdr < reinterpret_cast<Elf32_Phdr *>(file_memory + ehdr->e_phoff) + ehdr->e_phnum;
-    phdr++) {
+       phdr < reinterpret_cast<Elf32_Phdr *>(file_memory + ehdr->e_phoff) +
+                  ehdr->e_phnum;
+       phdr++) {
     std::printf("Checking ELF program header type... ");
     switch (phdr->p_type) {
     case PT_NULL:
@@ -154,10 +155,15 @@ void *load_elf(uint8_t *file_memory, size_t length) {
       std::printf("PHDR\n");
       phandler_phdr(ehdr, phdr);
       break;
+    case PT_LOOS...PT_HIOS:
+      std::printf("OS\n");
+      break;
     default:
-      error("unknown\n@offset %#08lx\n", reinterpret_cast<unsigned long>(phdr) - reinterpret_cast<unsigned long>(file_memory));
+      error("unknown\n@offset %#08lx\n",
+            reinterpret_cast<unsigned long>(phdr) -
+                reinterpret_cast<unsigned long>(file_memory));
     }
   }
 
-  return reinterpret_cast<void *>(&nop);
+  return lookup(reinterpret_cast<void *>(ehdr->e_entry));
 }

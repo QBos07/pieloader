@@ -1,0 +1,78 @@
+               VMA       Size Align Out     In      Symbol
+                 0         52     4 EHDR
+              0x34        288     4 PHDR
+             0x154         16     4 .hash
+             0x164         24     4 .gnu.hash
+             0x17c         16     4 .dynsym
+             0x18c          1     1 .dynstr
+             0x190         36     4 .rela.dyn
+             0x1b4         12     4 .eh_frame_hdr
+            0x11c0        236     4 .text
+            0x11c0         20     4         ../sdk/libsdk.a(lcd.o):(.text.LCD_GetSize)
+            0x11c0          0     0                 _LCD_GetSize
+            0x11d4         20     4         ../sdk/libsdk.a(lcd.o):(.text.LCD_GetVRAMAddress)
+            0x11d4          0     0                 _LCD_GetVRAMAddress
+            0x11e8         20     4         ../sdk/libsdk.a(lcd.o):(.text.LCD_Refresh)
+            0x11e8          0     0                 _LCD_Refresh
+            0x11fc         20     4         ../sdk/libsdk.a(lcd.o):(.text.LCD_VRAMBackup)
+            0x11fc          0     0                 _LCD_VRAMBackup
+            0x1210         20     4         ../sdk/libsdk.a(lcd.o):(.text.LCD_VRAMRestore)
+            0x1210          0     0                 _LCD_VRAMRestore
+            0x1224         84     4         /tmp/cchvVeI0.ltrans0.ltrans.o:(.text._Z8calcInitv)
+            0x1224          0     0                 __Z8calcInitv
+            0x1278         52     4         /tmp/cchvVeI0.ltrans0.ltrans.o:(.text.main)
+            0x1278          0     0                 _main
+            0x22ac        144     4 .dynamic
+            0x233c         16     4 .got
+            0x234c       3252     1 .relro_padding
+            0x334c         12     4 .got.plt
+            0x3358         12     4 .bss
+            0x3358          4     4         ../sdk/libsdk.a(calc.o):(.bss.height)
+            0x3358          0     0                 _height
+            0x335c          4     4         ../sdk/libsdk.a(calc.o):(.bss.width)
+            0x335c          0     0                 _width
+            0x3360          4     4         ../sdk/libsdk.a(calc.o):(.bss.vram)
+            0x3360          0     0                 _vram
+                 0        125     1 .comment
+                 0        334     1 .debug_abbrev
+                 0         82     1         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_abbrev)
+              0x52        252     1         /tmp/cc6EG2wH.debug.temp.o:(.debug_abbrev)
+                 0         40     1 .debug_aranges
+                 0         40     1         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_aranges)
+                 0         88     4 .debug_frame
+                 0         88     4         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_frame)
+                 0        656     1 .debug_info
+                 0        180     1         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_info)
+              0xb4        476     1         /tmp/cc6EG2wH.debug.temp.o:(.debug_info)
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 
+              0xb4          0     0                 _main.cpp.4cae09af
+              0xb4          0     0                 _main.cpp.4cae09af
+                 0        282     1 .debug_line
+                 0        201     1         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_line)
+              0xc9         81     1         /tmp/cc6EG2wH.debug.temp.o:(.debug_line)
+                 0        219     1 .debug_line_str
+                 0         25     1 .debug_rnglists
+                 0         25     1         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_rnglists)
+                 0        905     1 .debug_str
+                 0        250     1 .shstrtab
+                 0        629     1 .strtab
+                 0       1440     4 .symtab
+                 0       1000     4 SHDR

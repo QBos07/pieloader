@@ -11,6 +11,6 @@ void phandler_phdr(Elf32_Ehdr *ehdr, Elf32_Phdr *phdr) {
 
   std::printf("Checking program header size... ");
   if (phdr->p_filesz != sizeof(Elf32_Phdr) * ehdr->e_phnum)
-    error("E: %zu != %zu\n", static_cast<size_t>(phdr->p_filesz), sizeof(Elf32_Ehdr) * ehdr->e_phnum);
-  std::printf("%zu\n", ehdr->e_phnum * sizeof(Elf32_Phdr));
+    error("E: %lu != %lu\n", static_cast<size_t>(phdr->p_filesz), sizeof(Elf32_Ehdr) * ehdr->e_phnum);
+  std::printf("%lu\n", ehdr->e_phnum * sizeof(Elf32_Phdr));
 }

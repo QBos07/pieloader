@@ -12,5 +12,8 @@ void phandler_dynamic(uint8_t *file_memory, size_t length, Elf32_Phdr *phdr);
 void phandler_interp(uint8_t *file_memory, size_t length, Elf32_Phdr *phdr);
 void phandler_phdr(Elf32_Ehdr *ehdr, Elf32_Phdr *phdr);
 
-// original offset -> loaded + length
+// original virt addr -> loaded + length
 extern std::map<uint8_t *, std::pair<uint8_t *, size_t>> *file_loads;
+
+void *lookup(void *original);
+void *lookup(void *absolute, void *base);

@@ -1,0 +1,6 @@
+# Compiled files
+*.o
+*.a
+
+# Doxygen output
+doc/

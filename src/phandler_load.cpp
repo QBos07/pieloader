@@ -49,5 +49,6 @@ void phandler_load(uint8_t *file_memory, size_t length, Elf32_Phdr *phdr) {
   std::memset(memory + phdr->p_filesz, 0, phdr->p_memsz - phdr->p_filesz);
   std::printf("Done\n");
 
-  (*file_loads)[reinterpret_cast<uint8_t *>(phdr->p_offset)] = std::make_pair(memory, phdr->p_filesz);
+  std::printf("Loaded %p (%p) on %p - %p\n", file_memory - phdr->p_offset, reinterpret_cast<void *>(phdr->p_vaddr), memory, memory + phdr->p_memsz);
+  (*file_loads)[reinterpret_cast<uint8_t *>(phdr->p_vaddr)] = std::make_pair(memory, phdr->p_memsz);
 }

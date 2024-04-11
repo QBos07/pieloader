@@ -1,0 +1,11 @@
+PROJECT_NAME = "hollyhock"
+
+INPUT = .
+FILE_PATTERNS = *.c *.cpp *.h *.hpp *.s
+RECURSIVE = YES
+EXTRACT_PRIVATE = NO
+
+GENERATE_HTML = YES
+HTML_OUTPUT = doc
+
+GENERATE_LATEX = NO
