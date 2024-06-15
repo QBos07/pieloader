@@ -7,7 +7,7 @@
 #include <elf.h>
 #include <sys/_stdint.h>
 
-void phandler_dynamic(uint8_t *file_memory, size_t length, Elf32_Phdr *phdr) {
+void phandler_dynamic(uint8_t *file_memory, std::size_t length, Elf32_Phdr *phdr) {
   std::printf("Overlaying dynamic section... ");
   if (phdr->p_filesz > length)
     error("EOF");
@@ -18,12 +18,12 @@ void phandler_dynamic(uint8_t *file_memory, size_t length, Elf32_Phdr *phdr) {
 
   for (auto dyn = reinterpret_cast<Elf32_Dyn *>(file_memory + phdr->p_offset);
        dyn->d_tag != DT_NULL; ++dyn) {
-    if (reinterpret_cast<uintptr_t>(dyn) -
-            reinterpret_cast<uintptr_t>(file_memory) >
+    if (reinterpret_cast<std::uintptr_t>(dyn) -
+            reinterpret_cast<std::uintptr_t>(file_memory) >
         length)
       error("EOF");
-    // if (reinterpret_cast<uintptr_t>(dyn) -
-    // reinterpret_cast<uintptr_t>(file_memory) > phdr->p_filesz)
+    // if (reinterpret_cast<std::uintptr_t>(dyn) -
+    // reinterpret_cast<std::uintptr_t>(file_memory) > phdr->p_filesz)
     //   error("Overrun");
     switch (dyn->d_tag) {
     case DT_NEEDED:

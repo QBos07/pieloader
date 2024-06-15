@@ -1,0 +1,11 @@
+.include "_util.inc"
+
+DEFINE_OS_FUNC Debug_GetCursorPosition, 0x8002E448
+DEFINE_OS_FUNC Debug_Printf, 0x8002DBC8
+DEFINE_OS_FUNC Debug_PrintNumberHex_Byte, 0x800944A0
+DEFINE_OS_FUNC Debug_PrintNumberHex_Dword, 0x80094514
+DEFINE_OS_FUNC Debug_PrintNumberHex_Nibble, 0x80094466
+DEFINE_OS_FUNC Debug_PrintNumberHex_Word, 0x800944C8
+DEFINE_OS_FUNC Debug_PrintString, 0x8002DA0C
+DEFINE_OS_FUNC Debug_SetCursorPosition, 0x8002E430
+DEFINE_OS_FUNC Debug_WaitKey, 0x80094380

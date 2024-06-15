@@ -1,13 +1,13 @@
 DOXYGEN=doxygen
 
 AS:=sh4aeb-pic-elf-gcc
-AS_FLAGS:=-fPIE -ffreestanding -ffunction-sections -fdata-sections -m4a-nofpu -Wall -Wextra -Os -I include/
+AS_FLAGS:=-fPIC -ffreestanding -ffunction-sections -fdata-sections -m4a-nofpu -Wall -Wextra -Os -I include/
 
 CC:=sh4aeb-pic-elf-gcc
-CC_FLAGS:=-fPIE -ffreestanding -ffunction-sections -fdata-sections -m4a-nofpu -Wall -Wextra -Os -I include/
+CC_FLAGS:=-fPIC -ffreestanding -ffunction-sections -fdata-sections -m4a-nofpu -Wall -Wextra -Os -I include/
 
 CXX:=sh4aeb-pic-elf-g++
-CXX_FLAGS:=-fPIE -ffreestanding -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -m4a-nofpu -Wall -Wextra -Os -I include/
+CXX_FLAGS:=-fPIC -ffreestanding -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -m4a-nofpu -Wall -Wextra -Os -I include/
 
 AR:=sh4aeb-pic-elf-ar
 AR_FLAGS:=src
@@ -37,7 +37,7 @@ lib%.a:
 	ln -s $< $@
 
 %.o: %.S
-	$(AS) -c $< -o $@ $(AS_FLAGS)
+	$(AS) -c $< -o $@ $(AS_FLAGS) -Wa,-I -Wa,$(patsubst %/,%,$(dir $<))
 
 %.o: %.c
 	$(CC) -c $< -o $@ $(CC_FLAGS)

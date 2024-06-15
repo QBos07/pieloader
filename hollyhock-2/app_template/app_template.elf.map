@@ -1,78 +1,113 @@
                VMA       Size Align Out     In      Symbol
                  0         52     4 EHDR
-              0x34        288     4 PHDR
-             0x154         16     4 .hash
-             0x164         24     4 .gnu.hash
-             0x17c         16     4 .dynsym
-             0x18c          1     1 .dynstr
-             0x190         36     4 .rela.dyn
-             0x1b4         12     4 .eh_frame_hdr
-            0x11c0        236     4 .text
-            0x11c0         20     4         ../sdk/libsdk.a(lcd.o):(.text.LCD_GetSize)
-            0x11c0          0     0                 _LCD_GetSize
-            0x11d4         20     4         ../sdk/libsdk.a(lcd.o):(.text.LCD_GetVRAMAddress)
-            0x11d4          0     0                 _LCD_GetVRAMAddress
-            0x11e8         20     4         ../sdk/libsdk.a(lcd.o):(.text.LCD_Refresh)
-            0x11e8          0     0                 _LCD_Refresh
-            0x11fc         20     4         ../sdk/libsdk.a(lcd.o):(.text.LCD_VRAMBackup)
-            0x11fc          0     0                 _LCD_VRAMBackup
-            0x1210         20     4         ../sdk/libsdk.a(lcd.o):(.text.LCD_VRAMRestore)
-            0x1210          0     0                 _LCD_VRAMRestore
-            0x1224         84     4         /tmp/cchvVeI0.ltrans0.ltrans.o:(.text._Z8calcInitv)
-            0x1224          0     0                 __Z8calcInitv
-            0x1278         52     4         /tmp/cchvVeI0.ltrans0.ltrans.o:(.text.main)
-            0x1278          0     0                 _main
-            0x22ac        144     4 .dynamic
-            0x233c         16     4 .got
-            0x234c       3252     1 .relro_padding
-            0x334c         12     4 .got.plt
-            0x3358         12     4 .bss
-            0x3358          4     4         ../sdk/libsdk.a(calc.o):(.bss.height)
-            0x3358          0     0                 _height
-            0x335c          4     4         ../sdk/libsdk.a(calc.o):(.bss.width)
-            0x335c          0     0                 _width
-            0x3360          4     4         ../sdk/libsdk.a(calc.o):(.bss.vram)
-            0x3360          0     0                 _vram
+              0x34        256     4 PHDR
+             0x134         16     4 .hash
+             0x144         24     4 .gnu.hash
+             0x15c         16     4 .dynsym
+             0x16c          1     1 .dynstr
+             0x170         36     4 .rela.dyn
+             0x194         12     4 .eh_frame_hdr
+             0x1a0         32     4 .rodata.str1.4
+            0x11c0       1596     4 .text
+            0x11c0        396     4         main.o:(.text)
+            0x11c0          0     0                 _main
+            0x134c         80     4         main.o:(.text._Z8setPixeliim)
+            0x134c          0     0                 __Z8setPixeliim
+            0x139c          0     1         ../sdk/libsdk.a(calc.o):(.text)
+            0x139c        220     4         ../sdk/libsdk.a(calc.o):(.text._Z4lineiiiit)
+            0x139c          0     0                 __Z4lineiiiit
+            0x1478         76     4         ../sdk/libsdk.a(calc.o):(.text._Z5vlineiiit)
+            0x1478          0     0                 __Z5vlineiiit
+            0x14c4        540     4         ../sdk/libsdk.a(calc.o):(.text._Z8triangleiiiiiitt)
+            0x14c4          0     0                 __Z8triangleiiiiiitt
+            0x16e0         68     4         ../sdk/libsdk.a(calc.o):(.text._Z10fillScreent)
+            0x16e0          0     0                 __Z10fillScreent
+            0x1724        108     4         ../sdk/libsdk.a(debug.o):(.text)
+            0x1724          0     0                 _Debug_GetCursorPosition
+            0x172c          0     0                 .addr_Debug_GetCursorPosition
+            0x1730          0     0                 _Debug_Printf
+            0x1738          0     0                 .addr_Debug_Printf
+            0x173c          0     0                 _Debug_PrintNumberHex_Byte
+            0x1744          0     0                 .addr_Debug_PrintNumberHex_Byte
+            0x1748          0     0                 _Debug_PrintNumberHex_Dword
+            0x1750          0     0                 .addr_Debug_PrintNumberHex_Dword
+            0x1754          0     0                 _Debug_PrintNumberHex_Nibble
+            0x175c          0     0                 .addr_Debug_PrintNumberHex_Nibble
+            0x1760          0     0                 _Debug_PrintNumberHex_Word
+            0x1768          0     0                 .addr_Debug_PrintNumberHex_Word
+            0x176c          0     0                 _Debug_PrintString
+            0x1774          0     0                 .addr_Debug_PrintString
+            0x1778          0     0                 _Debug_SetCursorPosition
+            0x1780          0     0                 .addr_Debug_SetCursorPosition
+            0x1784          0     0                 _Debug_WaitKey
+            0x178c          0     0                 .addr_Debug_WaitKey
+            0x1790        108     4         ../sdk/libsdk.a(lcd.o):(.text)
+            0x1790          0     0                 _LCD_ClearScreen
+            0x1798          0     0                 .addr_LCD_ClearScreen
+            0x179c          0     0                 _LCD_GetPixel
+            0x17a4          0     0                 .addr_LCD_GetPixel
+            0x17a8          0     0                 _LCD_GetSize
+            0x17b0          0     0                 .addr_LCD_GetSize
+            0x17b4          0     0                 _LCD_GetVRAMAddress
+            0x17bc          0     0                 .addr_LCD_GetVRAMAddress
+            0x17c0          0     0                 _LCD_Refresh
+            0x17c8          0     0                 .addr_LCD_Refresh
+            0x17cc          0     0                 _LCD_SetPixel
+            0x17d4          0     0                 .addr_LCD_SetPixel
+            0x17d8          0     0                 _LCD_SetPixelFromPalette
+            0x17e0          0     0                 .addr_LCD_SetPixelFromPalette
+            0x17e4          0     0                 _LCD_VRAMBackup
+            0x17ec          0     0                 .addr_LCD_VRAMBackup
+            0x17f0          0     0                 _LCD_VRAMRestore
+            0x17f8          0     0                 .addr_LCD_VRAMRestore
+            0x27fc        144     4 .dynamic
+            0x288c         16     4 .got
+            0x389c          0     1 .data
+            0x389c          0     1         main.o:(.data)
+            0x389c          0     1         ../sdk/libsdk.a(calc.o):(.data)
+            0x389c          0     1         ../sdk/libsdk.a(debug.o):(.data)
+            0x389c          0     1         ../sdk/libsdk.a(lcd.o):(.data)
+            0x389c         12     4 .got.plt
+            0x38a8          8     4 .hollyhock_author
+            0x38a8          8     4         main.o:(.hollyhock_author)
+            0x38a8          0     0                 _hollyhock_author
+            0x38b0         30     4 .hollyhock_description
+            0x38b0         30     4         main.o:(.hollyhock_description)
+            0x38b0          0     0                 _hollyhock_description
+            0x38d0         12     4 .hollyhock_name
+            0x38d0         12     4         main.o:(.hollyhock_name)
+            0x38d0          0     0                 _hollyhock_name
+            0x38dc          6     4 .hollyhock_version
+            0x38dc          6     4         main.o:(.hollyhock_version)
+            0x38dc          0     0                 _hollyhock_version
+            0x38e4         12     4 .bss
+            0x38e4          0     1         main.o:(.bss)
+            0x38e4          0     1         ../sdk/libsdk.a(calc.o):(.bss)
+            0x38e4          4     4         ../sdk/libsdk.a(calc.o):(.bss.height)
+            0x38e4          0     0                 _height
+            0x38e8          4     4         ../sdk/libsdk.a(calc.o):(.bss.width)
+            0x38e8          0     0                 _width
+            0x38ec          4     4         ../sdk/libsdk.a(calc.o):(.bss.vram)
+            0x38ec          0     0                 _vram
+            0x38f0          0     1         ../sdk/libsdk.a(debug.o):(.bss)
+            0x38f0          0     1         ../sdk/libsdk.a(lcd.o):(.bss)
                  0        125     1 .comment
-                 0        334     1 .debug_abbrev
-                 0         82     1         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_abbrev)
-              0x52        252     1         /tmp/cc6EG2wH.debug.temp.o:(.debug_abbrev)
+                 0        516     1 .debug_abbrev
+                 0        516     1         main.o:(.debug_abbrev)
                  0         40     1 .debug_aranges
-                 0         40     1         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_aranges)
-                 0         88     4 .debug_frame
-                 0         88     4         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_frame)
-                 0        656     1 .debug_info
-                 0        180     1         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_info)
-              0xb4        476     1         /tmp/cc6EG2wH.debug.temp.o:(.debug_info)
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 
-              0xb4          0     0                 _main.cpp.4cae09af
-              0xb4          0     0                 _main.cpp.4cae09af
-                 0        282     1 .debug_line
-                 0        201     1         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_line)
-              0xc9         81     1         /tmp/cc6EG2wH.debug.temp.o:(.debug_line)
-                 0        219     1 .debug_line_str
-                 0         25     1 .debug_rnglists
-                 0         25     1         /tmp/cchvVeI0.ltrans0.ltrans.o:(.debug_rnglists)
-                 0        905     1 .debug_str
-                 0        250     1 .shstrtab
-                 0        629     1 .strtab
-                 0       1440     4 .symtab
-                 0       1000     4 SHDR
+                 0         40     1         main.o:(.debug_aranges)
+                 0        112     4 .debug_frame
+                 0        112     4         main.o:(.debug_frame)
+                 0       1313     1 .debug_info
+                 0       1313     1         main.o:(.debug_info)
+                 0        616     1 .debug_line
+                 0        616     1         main.o:(.debug_line)
+                 0         91     1 .debug_loclists
+                 0         91     1         main.o:(.debug_loclists)
+                 0         38     1 .debug_rnglists
+                 0         38     1         main.o:(.debug_rnglists)
+                 0        822     1 .debug_str
+                 0        332     1 .shstrtab
+                 0       1439     1 .strtab
+                 0       1792     4 .symtab
+                 0       1200     4 SHDR

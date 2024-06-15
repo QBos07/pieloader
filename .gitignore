@@ -1,3 +1,5 @@
 .cache
 obj
+obj.pie
 dist
+dist.pie

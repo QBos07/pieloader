@@ -1,19 +1,21 @@
 #include "elfloader.hpp"
 #include "hhk.h"
 #include "util.hpp"
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <elf.h>
+#include <cstdlib>
 #include <utility>
 
-std::map<uint8_t *, std::pair<uint8_t *, size_t>> *file_loads;
+std::map<uint8_t *, std::pair<uint8_t *, std::size_t>> *file_loads;
 
 void nop() {
   std::printf("main exec\n");
   Debug_WaitKey();
 }
 
-void *load_elf(uint8_t *file_memory, size_t length) {
+void *load_elf(uint8_t *file_memory, std::size_t length) {
   std::printf("Checking if ELF file... ");
   if (length < SELFMAG)
     error("EOF");
@@ -121,14 +123,52 @@ void *load_elf(uint8_t *file_memory, size_t length) {
   if (length < ehdr->e_phnum * sizeof(Elf32_Phdr) + sizeof(Elf32_Phdr))
     error("phdrs are over EOF\n");
 
-  file_loads = new std::map<uint8_t *, std::pair<uint8_t *, size_t>>();
+  file_loads = new std::map<uint8_t *, std::pair<uint8_t *, std::size_t>>();
   dealloc_list->push_back(file_loads);
+
+  {
+    decltype(Elf32_Phdr::p_vaddr) load_start = -1;
+    decltype(Elf32_Phdr::p_vaddr) load_end = 0;
+    decltype(Elf32_Phdr::p_align) alignment = 0;
+    for (auto phdr =
+             reinterpret_cast<Elf32_Phdr *>(file_memory + ehdr->e_phoff);
+         phdr < reinterpret_cast<Elf32_Phdr *>(file_memory + ehdr->e_phoff) +
+                    ehdr->e_phnum;
+         phdr++) {
+      std::printf("Pre-Checking program header type LOAD... ");
+      if (phdr->p_type != PT_LOAD) {
+        std::printf("no\n");
+        continue;
+      }
+      std::printf("yes\n");
+
+      if (phdr->p_vaddr < load_start)
+        load_start = phdr->p_vaddr;
+      if (phdr->p_vaddr + phdr->p_memsz > load_end)
+        load_end = phdr->p_vaddr + phdr->p_memsz;
+      if (phdr->p_align % 2 != 0 &&
+          (phdr->p_vaddr - phdr->p_offset) % phdr->p_align != 0)
+        error("E: alignment %#08lx\n",
+              static_cast<unsigned long>(phdr->p_align));
+      if (phdr->p_align > alignment)
+        alignment = phdr->p_align;
+    }
+    std::printf("Getting memory... ");
+    base_address =
+        reinterpret_cast<void *>(reinterpret_cast<std::uintptr_t>(aligned_alloc(
+                                     alignment, load_end - load_start)) -
+                                 load_start);
+    if (!base_address)
+      error("Error!\n");
+    std::printf("Done\n");
+    std::printf("Base address = %p\n", base_address);
+  }
 
   for (auto phdr = reinterpret_cast<Elf32_Phdr *>(file_memory + ehdr->e_phoff);
        phdr < reinterpret_cast<Elf32_Phdr *>(file_memory + ehdr->e_phoff) +
                   ehdr->e_phnum;
        phdr++) {
-    std::printf("Checking ELF program header type... ");
+    std::printf("Checking program header type... ");
     switch (phdr->p_type) {
     case PT_NULL:
       std::printf("NULL\n");
@@ -155,7 +195,7 @@ void *load_elf(uint8_t *file_memory, size_t length) {
       std::printf("PHDR\n");
       phandler_phdr(ehdr, phdr);
       break;
-    case PT_LOOS...PT_HIOS:
+    case PT_LOOS ... PT_HIOS:
       std::printf("OS\n");
       break;
     default:

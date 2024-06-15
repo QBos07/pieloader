@@ -1,12 +1,12 @@
 #include <elf.h>
-#include <cstddef>
+#include <cstdint>
 
 typedef struct {
   Elf32_Rela *rela;
-  size_t rela_count;
+  std::size_t rela_count;
   Elf32_Sym *symtab;
   char *strtab;
-  size_t strtab_size;
+  std::size_t strtab_size;
 } relocs_t;
 
-void relocate(relocs_t *relocs, uint8_t *file_memory, size_t length);
+void relocate(relocs_t *relocs, uint8_t *file_memory, std::size_t length);

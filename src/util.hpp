@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdio>
-#include <stdlib.h>
+#include <cstdlib>
 #include <list>
 #include "hhk.h"
 #define error(...) do { std::printf(__VA_ARGS__); Debug_WaitKey(); exit(EXIT_FAILURE); } while (0)

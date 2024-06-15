@@ -12,13 +12,13 @@ AS:=sh4aeb-pic-elf-gcc
 AS_FLAGS:=
 
 CC:=sh4aeb-pic-elf-gcc
-CC_FLAGS:=-fPIE -ffreestanding -flto -ffunction-sections -fdata-sections -fshort-wchar -Wall -Wextra -gdwarf-5 -Og -I $(SDK_DIR)/include/
+CC_FLAGS:=-fPIE -Wall -Wextra -gdwarf-5 -Og -I $(SDK_DIR)/include/
 
 CXX:=sh4aeb-pic-elf-g++
-CXX_FLAGS:=-fPIE -ffreestanding -flto -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -gdwarf-5 -Og -I $(SDK_DIR)/include/ -m4a-nofpu
+CXX_FLAGS:=-fPIE -fno-exceptions -fno-rtti -fshort-wchar -Wall -Wextra -gdwarf-5 -Og -I $(SDK_DIR)/include/ -m4a-nofpu
 
 LD:=sh4aeb-pic-elf-g++
-LD_FLAGS:=-fuse-ld=mold -nolibc -nostartfiles -e _main -pie -Wno-undef -Wl,--gc-sections -L$(SDK_DIR) $(CXX_FLAGS)
+LD_FLAGS:=-fuse-ld=mold -z norelro -nolibc -nostartfiles -e _main -pie -Wno-undef -L$(SDK_DIR) $(CXX_FLAGS)
 
 READELF:=sh4aeb-pic-elf-readelf
 OBJCOPY:=sh4aeb-pic-elf-objcopy

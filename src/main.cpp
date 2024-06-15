@@ -4,7 +4,6 @@
 #include "util.hpp"
 #include <algorithm>
 #include <climits>
-#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -33,7 +32,7 @@ int main() {
   std::printf("Done\n");
   std::printf("Getting length... ");
   std::fseek(file, 0, SEEK_END);
-  size_t length = std::ftell(file);
+  std::size_t length = std::ftell(file);
   std::rewind(file);
   std::printf("%lu\n", length);
 
@@ -44,7 +43,15 @@ int main() {
     error("Error!\n");
   std::printf("Done\n");
   std::printf("Copying file... ");
-  std::fread(file_memory, 1, length, file);
+  for (size_t i = 0; i < length / 512; i++) {
+    if (std::fread(file_memory + i * 512, 32, 512 / 32, file) != 512 / 32)
+      error("Error!\n");
+  }
+  if (length % 512 != 0) {
+    if (std::fread(file_memory + (length / 512) * 512, 1, (length % 512),
+                   file) != length % 512)
+      error("Error!\n");
+  }
   std::printf("Done\n");
   std::printf("Closing file... ");
   std::fclose(file);
@@ -55,26 +62,29 @@ int main() {
   dealloc_list->remove(file_memory);
   // Debug_WaitKey();
   delete[] file_memory;
-  std::printf("Dumping memory... ");
+  /*std::printf("Dumping memory... ");
   {
-    std::string buffer;
-    for (auto load : *file_loads) {
-      buffer += std::to_string(reinterpret_cast<std::make_unsigned_t<std::intptr_t>>(load.second.first));
-      buffer += " ";
-      for (auto it : std::span(load.second.first, load.second.second)) {
+    auto buffer = new std::string;
+    for (const auto& load : *file_loads) {
+      if (load != *(file_loads->cbegin()))
+        *buffer += ":";
+      *buffer += std::to_string(reinterpret_cast<std::make_unsigned_t<std::intptr_t>>(load.second.first));
+      *buffer += " ";
+      for (const auto& it : std::span(load.second.first, load.second.second)) {
         char tmp[2+1];
         std::snprintf(tmp, sizeof(tmp), "%02X", it);
-        buffer += tmp;
+        *buffer += tmp;
       }
-      buffer += ":";
     }
-    for (auto i = 0ul; i < buffer.size(); i += 600) {
-      auto sub = buffer.substr(i, 600);
-      uint8_t temp_buffer[qrcodegen_BUFFER_LEN_FOR_VERSION(15)];
-      uint8_t qrcode[qrcodegen_BUFFER_LEN_FOR_VERSION(15)];
-      if (!qrcodegen_encodeText(sub.c_str(), temp_buffer, qrcode, qrcodegen_Ecc::qrcodegen_Ecc_LOW, qrcodegen_VERSION_MIN, 15, qrcodegen_Mask::qrcodegen_Mask_AUTO, true))
-        error("Failed to generate QR code version 15 for string length %zu:\"%s\"\n", std::strlen(sub.c_str()), sub.c_str());
-      std::printf("Data %zu/%zu\n", i/600+1, buffer.size()/600+1);
+    std::printf("%zu ", buffer->size()/600+1);
+    for (auto i = 0ul; i < buffer->size(); i += 600) {
+      auto sub = new std::string;
+      *sub = buffer->substr(i, 600);
+      auto temp_buffer = new uint8_t[qrcodegen_BUFFER_LEN_FOR_VERSION(15)];
+      auto qrcode = new uint8_t[qrcodegen_BUFFER_LEN_FOR_VERSION(15)];
+      if (!qrcodegen_encodeText(sub->c_str(), temp_buffer, qrcode, qrcodegen_Ecc::qrcodegen_Ecc_LOW, qrcodegen_VERSION_MIN, 15, qrcodegen_Mask::qrcodegen_Mask_AUTO, true))
+        error("Failed to generate QR code version 15 for string length %zu:\"%s\"\n", std::strlen(sub->c_str()), sub->c_str());
+      std::printf("%zu ", i/600+1);
       std::fflush(stdout);
       volatile uint16_t *const FRAMEBUFFER = reinterpret_cast<uint16_t *>(0x8c000000);
       constexpr auto boarder = 1;
@@ -95,7 +105,7 @@ int main() {
       Debug_WaitKey();
     }
   }
-  std::printf("Done\n");
+  std::printf("Done\n");*/
   std::printf("Press any key to execute %#08lx... \n",
               reinterpret_cast<unsigned long>(mainPtr));
   std::fflush(stdout);

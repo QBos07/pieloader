@@ -13,9 +13,12 @@ APP_AUTHOR("My name")
 APP_VERSION("1.0.2")
 
 extern "C"
-void main() {
-	calcInit(); //backup screen and init some variables
-/*
+int main() {
+	//calcInit(); //backup screen and init some variables
+	vram = LCD_GetVRAMAddress();
+	LCD_GetSize(&width, &height);
+	LCD_VRAMBackup();
+
 	// Put your app's code here!
 
 	//Example for fillScreen(color);
@@ -48,14 +51,17 @@ void main() {
 	//Don't forget to do LCD_Refresh after setPixel(); line(); and triangle();
 	LCD_Refresh();
 
+	Debug_WaitKey();
 	//Example for getKey
-	while(true){
+	/*while(true){
 		uint32_t key1, key2;	//First create variables
 		getKey(&key1, &key2);	//then read the keys
 		if(testKey(key1, key2, KEY_CLEAR)){ //Use testKey() to test if a specific key is pressed
 			break;
 		}
-	}
-*/
-	calcEnd(); //restore screen and do stuff
+	}*/
+
+	//calcEnd(); //restore screen and do stuff
+	LCD_VRAMRestore();
+	LCD_Refresh();
 }

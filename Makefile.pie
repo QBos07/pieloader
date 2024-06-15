@@ -2,28 +2,28 @@
 # The .hhk file is the original format, the bin file is a newer format.
 APP_NAME:=pieloader
 
-AS:=sh4aeb-nano-elf-gcc
+AS:=sh4aeb-pic-elf-gcc
 AS_FLAGS:=-DAPPNAME_STRING=\"$(APP_NAME)\" -m4a-nofpu -gdwarf-5
 
 COMMON_FLAGS:=-flto -ffunction-sections -fdata-sections -gdwarf-5 -Og -m4a-nofpu -DAPPNAME_STRING=\"$(APP_NAME)\"
 INCLUDES:=
 WARNINGS:=-Wall -Wextra -Wno-main
 
-CC:=sh4aeb-nano-elf-gcc
+CC:=sh4aeb-pic-elf-gcc
 CC_FLAGS=$(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
 
-CXX:=sh4aeb-nano-elf-g++
+CXX:=sh4aeb-pic-elf-g++
 CXX_FLAGS=-std=c++20 -fno-exceptions -Wno-write-strings $(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
 
-LD:=sh4aeb-nano-elf-g++
-LD_FLAGS:=-nostartfiles -m4a-nofpu -Wl,--gc-sections -Wno-undef
+LD:=sh4aeb-pic-elf-g++
+LD_FLAGS:=-fuse-ld=mold -nostartfiles -e _main -m4a-nofpu -Wl,--gc-sections #-Wno-undef #$(shell $(LD) -print-file-name=crt0.o)
 
-READELF:=sh4aeb-nano-elf-readelf
-OBJCOPY:=sh4aeb-nano-elf-objcopy
+READELF:=sh4aeb-pic-elf-readelf
+OBJCOPY:=sh4aeb-pic-elf-objcopy
 
 SOURCEDIR = src
-BUILDDIR = obj
-OUTDIR = dist
+BUILDDIR = obj.pie
+OUTDIR = dist.pie
 
 AS_SOURCES:=$(shell find $(SOURCEDIR) -name '*.S')
 CC_SOURCES:=$(shell find $(SOURCEDIR) -name '*.c')
@@ -37,24 +37,18 @@ CXX_NOLTOSRCS:=$(shell find $(SOURCEDIR)/nolto -name '*.cpp')
 NOLTOOBJS := $(addprefix $(BUILDDIR)/,$(CC_NOLTOSRCS:.c=.o)) \
 	$(addprefix $(BUILDDIR)/,$(CXX_NOLTOSRCS:.cpp=.o))
 
-APP_ELF:=$(OUTDIR)/$(APP_NAME).elf
-APP_BIN:=$(OUTDIR)/$(APP_NAME).bin
+APP_ELF:=$(OUTDIR)/$(APP_NAME).pie.elf
 
-bin: $(APP_BIN) Makefile
+elf: $(APP_ELF) Makefile
 
-hhk: $(APP_ELF) Makefile
-
-all: $(APP_ELF) $(APP_BIN) Makefile
+all: $(APP_ELF) Makefile
 
 clean:
 	rm -rf $(BUILDDIR) $(OUTDIR)
 
-$(APP_BIN): $(APP_ELF)
-	$(OBJCOPY) --output-target=binary  --set-section-flags .bss=alloc,load,contents,data $(APP_ELF) $@
-
-$(APP_ELF): $(OBJECTS) $(SDK_DIR)/sdk.o linker.ld
+$(APP_ELF): $(OBJECTS) $(SDK_DIR)/sdk.o
 	mkdir -p $(dir $@)
-	$(LD) -T linker.ld -Wl,-Map $@.map -o $@ $(LD_FLAGS) $(OBJECTS)
+	$(LD) -Wl,-Map $@.map -o $@ $(LD_FLAGS) $(OBJECTS)
 
 $(NOLTOOBJS): COMMON_FLAGS+=-fno-lto
 
@@ -76,4 +70,4 @@ $(BUILDDIR)/%.o: %.cpp
 	$(CXX) -c $< -o $@ $(CXX_FLAGS)
 	@$(READELF) $@ -S | grep ".ctors" > /dev/null && echo "ERROR: Global constructors aren't supported." && rm $@ && exit 1 || exit 0
 
-.PHONY: bin hhk all clean
+.PHONY: elf all clean
