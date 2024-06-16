@@ -7,10 +7,10 @@ AS_FLAGS:=-DAPPNAME_STRING=\"$(APP_NAME)\" -m4a-nofpu -gdwarf-5
 
 COMMON_FLAGS:=-flto -ffunction-sections -fdata-sections -gdwarf-5 -Og -m4a-nofpu -DAPPNAME_STRING=\"$(APP_NAME)\"
 INCLUDES:=
-WARNINGS:=-Wall -Wextra -Wno-main
+WARNINGS:=-Wall -Wextra -Wno-main -pedantic -Werror -pedantic-errors
 
 CC:=sh4aeb-nano-elf-gcc
-CC_FLAGS=$(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
+CC_FLAGS=-std=c11 $(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)
 
 CXX:=sh4aeb-nano-elf-g++
 CXX_FLAGS=-std=c++20 -fno-exceptions -Wno-write-strings $(COMMON_FLAGS) $(INCLUDES) $(WARNINGS)

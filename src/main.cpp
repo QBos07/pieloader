@@ -34,7 +34,7 @@ int main() {
   std::fseek(file, 0, SEEK_END);
   std::size_t length = std::ftell(file);
   std::rewind(file);
-  std::printf("%lu\n", length);
+  std::printf("%zu\n", length);
 
   std::printf("Getting memory... ");
   auto file_memory = new uint8_t[length];
@@ -58,7 +58,7 @@ int main() {
   std::printf("Done\n");
 
   auto mainPtr =
-      reinterpret_cast<void (*)(void)>(load_elf(file_memory, length));
+      reinterpret_cast<int (*)(void)>(load_elf(file_memory, length));
   dealloc_list->remove(file_memory);
   // Debug_WaitKey();
   delete[] file_memory;
@@ -68,11 +68,11 @@ int main() {
     for (const auto& load : *file_loads) {
       if (load != *(file_loads->cbegin()))
         *buffer += ":";
-      *buffer += std::to_string(reinterpret_cast<std::make_unsigned_t<std::intptr_t>>(load.second.first));
+      *buffer += std::to_string(reinterpret_cast<std::uintptr_t>(load.second.first));
       *buffer += " ";
       for (const auto& it : std::span(load.second.first, load.second.second)) {
         char tmp[2+1];
-        std::snprintf(tmp, sizeof(tmp), "%02X", it);
+        std::snprintf(tmp, sizeof(tmp), "%02" PRIX8, it);
         *buffer += tmp;
       }
     }
@@ -106,8 +106,7 @@ int main() {
     }
   }
   std::printf("Done\n");*/
-  std::printf("Press any key to execute %#08lx... \n",
-              reinterpret_cast<unsigned long>(mainPtr));
+  std::printf("Press any key to execute %p... \n", reinterpret_cast<void *>(mainPtr));
   std::fflush(stdout);
   Debug_WaitKey();
   mainPtr();

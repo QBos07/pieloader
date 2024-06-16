@@ -1,5 +1,6 @@
 #include "elfloader.hpp"
 #include "util.hpp"
+#include <cinttypes>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -30,13 +31,12 @@ void phandler_load(uint8_t *file_memory, std::size_t length, Elf32_Phdr *phdr) {
   std::memset(reinterpret_cast<void *>(
                   reinterpret_cast<std::uintptr_t>(memory) + phdr->p_filesz),
               0, phdr->p_memsz - phdr->p_filesz);
-  std::printf("%i ", std::memcmp(memory, file_memory + phdr->p_offset, phdr->p_filesz));
   std::printf("Done\n");
 
-  std::printf("Loaded %p (%p) on %p - %p\n", file_memory - phdr->p_offset,
-              reinterpret_cast<void *>(phdr->p_vaddr), memory,
-              reinterpret_cast<void *>(
-                  reinterpret_cast<std::uintptr_t>(memory) + phdr->p_memsz));
+  std::printf("Loaded %#" PRIxPTR " (%#" PRIx32 ") on %p - %#" PRIxPTR "\n",
+              reinterpret_cast<std::uintptr_t>(file_memory) - static_cast<std::uintptr_t>(phdr->p_offset),
+              phdr->p_vaddr, memory,
+              reinterpret_cast<std::uintptr_t>(memory) + static_cast<std::uintptr_t>(phdr->p_memsz));
   (*file_loads)[reinterpret_cast<uint8_t *>(phdr->p_vaddr)] =
       std::make_pair(reinterpret_cast<uint8_t *>(memory), phdr->p_memsz);
 }

@@ -1,13 +1,14 @@
 #include "phandler_dynamic.hpp"
 #include "elfloader.hpp"
 #include "util.hpp"
+#include <cinttypes>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <elf.h>
-#include <sys/_stdint.h>
 
-void phandler_dynamic(uint8_t *file_memory, std::size_t length, Elf32_Phdr *phdr) {
+void phandler_dynamic(uint8_t *file_memory, std::size_t length,
+                      Elf32_Phdr *phdr) {
   std::printf("Overlaying dynamic section... ");
   if (phdr->p_filesz > length)
     error("EOF");
@@ -39,60 +40,57 @@ void phandler_dynamic(uint8_t *file_memory, std::size_t length, Elf32_Phdr *phdr
     case DT_DEBUG:
     case DT_FLAGS:
     case DT_FLAGS_1:
+    //maybe to do
     case DT_RELACOUNT:
     case DT_PLTGOT:
       break;
     case DT_RELA:
       if (relocs->rela)
         error("Multiple DT_RELA\n");
-      relocs->rela =
-          reinterpret_cast<Elf32_Rela *>(dyn->d_un.d_ptr);
-      std::printf("DT_RELA: %#08lx\n",
-                  reinterpret_cast<unsigned long>(relocs->rela));
+      relocs->rela = reinterpret_cast<decltype(relocs->rela)>(
+          lookup(reinterpret_cast<decltype(relocs->rela)>(dyn->d_un.d_ptr)));
+      std::printf("DT_RELA: %#08" PRIx32 "\n", dyn->d_un.d_ptr);
       break;
     case DT_RELASZ:
       if (relocs->rela_count)
         error("Multiple DT_RELASZ\n");
       relocs->rela_count = dyn->d_un.d_val / sizeof(Elf32_Rela);
-      std::printf("DT_RELASZ: %lu\n",
-                  static_cast<unsigned long>(dyn->d_un.d_val));
+      std::printf("DT_RELASZ: %" PRIu32 "\n", dyn->d_un.d_val);
       break;
     case DT_RELAENT:
       std::printf("DT_RELAENT: ");
       if (dyn->d_un.d_val != sizeof(Elf32_Rela))
-        error("E: %lu\n", static_cast<unsigned long>(dyn->d_un.d_val));
-      std::printf("%lu\n", sizeof(Elf32_Rela));
+        error("E: %" PRIu32 "\n", dyn->d_un.d_val);
+      std::printf("%zu\n", sizeof(Elf32_Rela));
       break;
     case DT_SYMTAB:
       if (relocs->symtab)
         error("Multiple DT_SYMTAB\n");
-      relocs->symtab =
-          reinterpret_cast<Elf32_Sym *>(dyn->d_un.d_ptr);
-      std::printf("DT_SYMTAB: %#08lx\n",
-                  reinterpret_cast<unsigned long>(relocs->symtab));
+      relocs->symtab = reinterpret_cast<decltype(relocs->symtab)>(
+          lookup(reinterpret_cast<decltype(relocs->symtab)>(dyn->d_un.d_ptr)));
+      std::printf("DT_SYMTAB: %#08" PRIx32 "\n", dyn->d_un.d_ptr);
       break;
     case DT_SYMENT:
       std::printf("DT_SYMENT: ");
       if (dyn->d_un.d_val != sizeof(Elf32_Sym))
-        error("E: %lu\n", static_cast<unsigned long>(dyn->d_un.d_val));
-      std::printf("%lu\n", sizeof(Elf32_Sym));
+        error("E: %" PRIu32 "\n", dyn->d_un.d_val);
+      std::printf("%zu\n", sizeof(Elf32_Sym));
       break;
     case DT_STRTAB:
       if (relocs->strtab)
         error("Multiple DT_STRTAB\n");
-      relocs->strtab = reinterpret_cast<char *>(dyn->d_un.d_ptr);
-      std::printf("DT_STRTAB: %#08lx\n",
-                  reinterpret_cast<unsigned long>(relocs->strtab));
+      relocs->strtab = reinterpret_cast<decltype(relocs->strtab)>(
+          lookup(reinterpret_cast<decltype(relocs->strtab)>(dyn->d_un.d_ptr)));
+      std::printf("DT_STRTAB: %#08" PRIx32 "\n", dyn->d_un.d_ptr);
       break;
     case DT_STRSZ:
       if (relocs->strtab_size)
         error("Multiple DT_STRSZ\n");
       relocs->strtab_size = dyn->d_un.d_val;
-      std::printf("DT_STRSZ: %lu\n",
-                  static_cast<unsigned long>(dyn->d_un.d_val));
+      std::printf("DT_STRSZ: %" PRIu32 "\n", dyn->d_un.d_val);
       break;
     default:
-      error("Unknown dynamic tag: %ld\n", static_cast<long>(dyn->d_tag));
+      error("Unknown dynamic tag: %" PRIi32 "\n", dyn->d_tag);
     }
   }
 

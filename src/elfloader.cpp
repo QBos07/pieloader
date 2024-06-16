@@ -1,11 +1,12 @@
 #include "elfloader.hpp"
 #include "hhk.h"
 #include "util.hpp"
+#include <cinttypes>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <elf.h>
-#include <cstdlib>
 #include <utility>
 
 std::map<uint8_t *, std::pair<uint8_t *, std::size_t>> *file_loads;
@@ -103,24 +104,24 @@ void *load_elf(uint8_t *file_memory, std::size_t length) {
   std::printf("Checking ELF entry... ");
   if (ehdr->e_entry == 0)
     error("E: 0\n");
-  std::printf("%#08lx\n", static_cast<unsigned long>(ehdr->e_entry));
+  std::printf("%#08" PRIx32 "\n", ehdr->e_entry);
 
   std::printf("Checking program header offset... ");
   if (ehdr->e_phoff == 0)
     error("E: 0\n");
-  std::printf("%#08lx\n", static_cast<unsigned long>(ehdr->e_phoff));
+  std::printf("%#08" PRIx32 "\n", ehdr->e_phoff);
 
   std::printf("Checking program header size... ");
   if (ehdr->e_phentsize != sizeof(Elf32_Phdr))
-    error("E: %hu != %lu\n", ehdr->e_phentsize, sizeof(Elf32_Phdr));
-  std::printf("%lu\n", sizeof(Elf32_Phdr));
+    error("E: %" PRIu16 " != %zu\n", ehdr->e_phentsize, sizeof(Elf32_Phdr));
+  std::printf("%zu\n", sizeof(Elf32_Phdr));
 
   std::printf("Checking program header count... ");
   if (ehdr->e_phnum == 0)
     error("E: 0\n");
-  std::printf("%hu\n", ehdr->e_phnum);
+  std::printf("%" PRIu16 "\n", ehdr->e_phnum);
 
-  if (length < ehdr->e_phnum * sizeof(Elf32_Phdr) + sizeof(Elf32_Phdr))
+  if (length < ehdr->e_phnum * sizeof(Elf32_Phdr) + ehdr->e_phoff)
     error("phdrs are over EOF\n");
 
   file_loads = new std::map<uint8_t *, std::pair<uint8_t *, std::size_t>>();
@@ -148,8 +149,7 @@ void *load_elf(uint8_t *file_memory, std::size_t length) {
         load_end = phdr->p_vaddr + phdr->p_memsz;
       if (phdr->p_align % 2 != 0 &&
           (phdr->p_vaddr - phdr->p_offset) % phdr->p_align != 0)
-        error("E: alignment %#08lx\n",
-              static_cast<unsigned long>(phdr->p_align));
+        error("E: alignment %#08" PRIx32 "\n", phdr->p_align);
       if (phdr->p_align > alignment)
         alignment = phdr->p_align;
     }
@@ -195,13 +195,15 @@ void *load_elf(uint8_t *file_memory, std::size_t length) {
       std::printf("PHDR\n");
       phandler_phdr(ehdr, phdr);
       break;
-    case PT_LOOS ... PT_HIOS:
-      std::printf("OS\n");
-      break;
     default:
-      error("unknown\n@offset %#08lx\n",
-            reinterpret_cast<unsigned long>(phdr) -
-                reinterpret_cast<unsigned long>(file_memory));
+      if (phdr->p_type >= PT_LOOS && phdr->p_type <= PT_HIOS)
+        std::printf("OS\n");
+      else if (phdr->p_type >= PT_LOPROC && phdr->p_type <= PT_HIPROC)
+        std::printf("PROC\n");
+      else
+        error("unknown\n@offset %#08" PRIxPTR "\n",
+              reinterpret_cast<std::uintptr_t>(phdr) -
+                  reinterpret_cast<std::uintptr_t>(file_memory));
     }
   }
 
